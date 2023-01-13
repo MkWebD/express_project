@@ -22,6 +22,8 @@ app.use((req, res, next) => {
 	console.log(`${req.method} request for ${req.url} ${delta}ms}`);
 });
 
+app.use(express.json());
+
 app.get("/friends", (req, res) => {
 	res.json(friends);
 });
@@ -34,6 +36,19 @@ app.get("/friends/:friendId", (req, res) => {
 	} else {
 		res.status(404).json({ error: "Friend not found" });
 	}
+});
+
+app.post("/friends", (req, res) => {
+	if (!req.body.name) {
+		return res.status(400).json({ error: "Name is required" });
+	}
+
+	const newFriend = {
+		id: friends.length,
+		name: req.body.name,
+	};
+	friends.push(newFriend);
+	res.status(201).json(newFriend);
 });
 
 app.get("/messages", (req, res) => {
